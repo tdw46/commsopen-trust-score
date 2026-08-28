@@ -18,7 +18,8 @@ inferences, and opaque machine-learning judgments.
 - Score evaluative actions by agreement with eventual community sentiment. A
   downvote on a broadly rejected note is as useful as an upvote on a broadly
   supported note; indiscriminate positivity does not raise trust. The voter's
-  own action is excluded when calculating the consensus used to assess it.
+  own action is excluded when calculating the consensus used to assess it, and
+  a single other vote is not treated as community consensus.
 - Keep moderation penalties explicit and separately reported.
 - Treat a post-scoped network-uniqueness marker as a small anti-brigading signal,
   never as identity or location evidence.
