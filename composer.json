@@ -1,0 +1,14 @@
+{
+  "name": "commsopen/trust-score",
+  "description": "An auditable, rules-based reputation score for creator communities.",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "CommsOpen\\Trust\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.0"
+  }
+}
