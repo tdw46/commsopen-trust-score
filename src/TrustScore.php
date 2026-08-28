@@ -54,7 +54,7 @@ final class TrustScore {
 
 		return array(
 			'version' => self::VERSION,
-			'score' => round($score, 2),
+			'score' => (int) round($score),
 			'band' => $score >= 80 ? 'high' : ($score >= 55 ? 'established' : ($score >= 30 ? 'developing' : 'limited')),
 			'label' => $score >= 80 ? 'High trust' : ($score >= 55 ? 'Established' : ($score >= 30 ? 'Developing' : 'Limited history')),
 			'factors' => $factors,
