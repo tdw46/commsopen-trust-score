@@ -70,6 +70,12 @@ assert($severeRecent['score'] < $stable['score'] - 30);
 assert($severeRecent['recent']['severePenalty'] > 0);
 assert(in_array($stable['band'], array('cube', 'initiate', 'adept', 'artisan', 'alchemist', 'sorcerer', 'wizard'), true));
 assert($stable['badge']['label'] === 'Wizard');
+assert($stable['badge']['minimum'] === 90);
+assert($stable['badge']['maximum'] === 100);
+
+$publishedRanks = TrustScore::ranks();
+assert(count($publishedRanks) === 7);
+assert(array_column($publishedRanks, 'key') === array('cube', 'initiate', 'adept', 'artisan', 'alchemist', 'sorcerer', 'wizard'));
 
 $badgeMethod = new ReflectionMethod(TrustScore::class, 'badge');
 $rankCases = array(

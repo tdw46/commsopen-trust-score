@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.1
+
+- Publish the seven rank thresholds through `TrustScore::ranks()` and include
+  each rank's minimum and maximum score in the badge result.
+
 ## 2.0.0
 
 - Add a stability-weighted long-term baseline and an evidence-gated 30-day

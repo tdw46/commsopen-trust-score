@@ -13,7 +13,7 @@ namespace CommsOpen\Trust;
  * the denominator.
  */
 final class TrustScore {
-	public const VERSION = '2.0.0';
+	public const VERSION = '2.0.1';
 	public const RECENT_WINDOW_DAYS = 30;
 	public const MIN_RECENT_EVIDENCE = 3;
 
@@ -149,26 +149,26 @@ final class TrustScore {
 		);
 	}
 
+	public static function ranks(): array {
+		return array(
+			array('key' => 'cube', 'label' => 'Default Cube', 'icon' => '◇', 'minimum' => 0, 'maximum' => 24, 'description' => 'New member or not enough history yet'),
+			array('key' => 'initiate', 'label' => 'Sketch Initiate', 'icon' => '✎', 'minimum' => 25, 'maximum' => 39, 'description' => 'Beginning to establish a community history'),
+			array('key' => 'adept', 'label' => 'Craft Adept', 'icon' => '✧', 'minimum' => 40, 'maximum' => 54, 'description' => 'A growing record of reliable participation'),
+			array('key' => 'artisan', 'label' => 'Arcane Artisan', 'icon' => '✦', 'minimum' => 55, 'maximum' => 66, 'description' => 'Established community reliability'),
+			array('key' => 'alchemist', 'label' => 'Visual Alchemist', 'icon' => '⚗', 'minimum' => 67, 'maximum' => 78, 'description' => 'Strong and consistently constructive history'),
+			array('key' => 'sorcerer', 'label' => 'Pipeline Sorcerer', 'icon' => '☄', 'minimum' => 79, 'maximum' => 89, 'description' => 'Deep, dependable community history'),
+			array('key' => 'wizard', 'label' => 'Wizard', 'icon' => '✹', 'minimum' => 90, 'maximum' => 100, 'description' => 'Exceptional, sustained community trust'),
+		);
+	}
+
 	private static function badge(float $score): array {
-		if ($score >= 90.0) {
-			return array('key' => 'wizard', 'label' => 'Wizard', 'icon' => '✹', 'description' => 'Exceptional, sustained community trust');
+		$ranks = array_reverse(self::ranks());
+		foreach ($ranks as $rank) {
+			if ($score >= $rank['minimum']) {
+				return $rank;
+			}
 		}
-		if ($score >= 79.0) {
-			return array('key' => 'sorcerer', 'label' => 'Pipeline Sorcerer', 'icon' => '☄', 'description' => 'Deep, dependable community history');
-		}
-		if ($score >= 67.0) {
-			return array('key' => 'alchemist', 'label' => 'Visual Alchemist', 'icon' => '⚗', 'description' => 'Strong and consistently constructive history');
-		}
-		if ($score >= 55.0) {
-			return array('key' => 'artisan', 'label' => 'Arcane Artisan', 'icon' => '✦', 'description' => 'Established community reliability');
-		}
-		if ($score >= 40.0) {
-			return array('key' => 'adept', 'label' => 'Craft Adept', 'icon' => '✧', 'description' => 'A growing record of reliable participation');
-		}
-		if ($score >= 25.0) {
-			return array('key' => 'initiate', 'label' => 'Sketch Initiate', 'icon' => '✎', 'description' => 'Beginning to establish a community history');
-		}
-		return array('key' => 'cube', 'label' => 'Default Cube', 'icon' => '◇', 'description' => 'New member or not enough history yet');
+		return self::ranks()[0];
 	}
 
 	private static function factor(string $label, float $earned, float $available): array {

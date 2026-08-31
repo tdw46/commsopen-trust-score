@@ -64,6 +64,8 @@ The seven display ranks are `Default Cube`, `Sketch Initiate`, `Craft Adept`,
 describe community trust history only; they do not represent artistic talent,
 technical skill, professional seniority, or identity verification. API clients
 should use `badge.key` for stable behavior and `badge.label` for display.
+`TrustScore::ranks()` publishes the full ordered ladder and exact thresholds:
+0–24, 25–39, 40–54, 55–66, 67–78, 79–89, and 90–100.
 
 ## Privacy and limitations
 
