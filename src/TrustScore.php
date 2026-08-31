@@ -13,7 +13,7 @@ namespace CommsOpen\Trust;
  * the denominator.
  */
 final class TrustScore {
-	public const VERSION = '2.0.1';
+	public const VERSION = '2.0.2';
 	public const RECENT_WINDOW_DAYS = 30;
 	public const MIN_RECENT_EVIDENCE = 3;
 
@@ -152,8 +152,8 @@ final class TrustScore {
 	public static function ranks(): array {
 		return array(
 			array('key' => 'cube', 'label' => 'Default Cube', 'icon' => '◇', 'minimum' => 0, 'maximum' => 24, 'description' => 'New member or not enough history yet'),
-			array('key' => 'initiate', 'label' => 'Sketch Initiate', 'icon' => '✎', 'minimum' => 25, 'maximum' => 39, 'description' => 'Beginning to establish a community history'),
-			array('key' => 'adept', 'label' => 'Craft Adept', 'icon' => '✧', 'minimum' => 40, 'maximum' => 54, 'description' => 'A growing record of reliable participation'),
+			array('key' => 'initiate', 'label' => 'Aspiring Art Mage', 'icon' => '✎', 'minimum' => 25, 'maximum' => 39, 'description' => 'Beginning to establish a creative community history'),
+			array('key' => 'adept', 'label' => "Mage's Apprentice", 'icon' => '✧', 'minimum' => 40, 'maximum' => 54, 'description' => 'A growing record of reliable participation'),
 			array('key' => 'artisan', 'label' => 'Arcane Artisan', 'icon' => '✦', 'minimum' => 55, 'maximum' => 66, 'description' => 'Established community reliability'),
 			array('key' => 'alchemist', 'label' => 'Visual Alchemist', 'icon' => '⚗', 'minimum' => 67, 'maximum' => 78, 'description' => 'Strong and consistently constructive history'),
 			array('key' => 'sorcerer', 'label' => 'Pipeline Sorcerer', 'icon' => '☄', 'minimum' => 79, 'maximum' => 89, 'description' => 'Deep, dependable community history'),

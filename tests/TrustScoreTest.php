@@ -76,6 +76,7 @@ assert($stable['badge']['maximum'] === 100);
 $publishedRanks = TrustScore::ranks();
 assert(count($publishedRanks) === 7);
 assert(array_column($publishedRanks, 'key') === array('cube', 'initiate', 'adept', 'artisan', 'alchemist', 'sorcerer', 'wizard'));
+assert(array_column($publishedRanks, 'label') === array('Default Cube', 'Aspiring Art Mage', "Mage's Apprentice", 'Arcane Artisan', 'Visual Alchemist', 'Pipeline Sorcerer', 'Wizard'));
 
 $badgeMethod = new ReflectionMethod(TrustScore::class, 'badge');
 $rankCases = array(

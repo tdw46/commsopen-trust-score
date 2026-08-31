@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2
+
+- Rename the two early creative trust ranks to `Aspiring Art Mage` and
+  `Mage's Apprentice` while preserving their stable keys and thresholds.
+
 ## 2.0.1
 
 - Publish the seven rank thresholds through `TrustScore::ranks()` and include

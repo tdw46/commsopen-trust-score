@@ -59,7 +59,7 @@ version and a changelog entry.
 
 ## Rank badges
 
-The seven display ranks are `Default Cube`, `Sketch Initiate`, `Craft Adept`,
+The seven display ranks are `Default Cube`, `Aspiring Art Mage`, `Mage's Apprentice`,
 `Arcane Artisan`, `Visual Alchemist`, `Pipeline Sorcerer`, and `Wizard`. They
 describe community trust history only; they do not represent artistic talent,
 technical skill, professional seniority, or identity verification. API clients
