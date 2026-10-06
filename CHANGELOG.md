@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.0 — 2026-10-04
+
+- Optional verified Stack Exchange and Stack Overflow reputation can each add up to five points after the community calculation. Missing, unverified and starting reputation are neutral. The bonus never changes community factor denominators or recent/moderation calculations. Additive response fields expose the community score and external contribution separately.
+- Publish the existing issue-resolution and helpful-feedback factors and their bounded recent recognition alongside the deployed algorithm.
+
 ## 2.0.2
 
 - Rename the two early creative trust ranks to `Aspiring Art Mage` and

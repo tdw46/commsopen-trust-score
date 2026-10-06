@@ -13,7 +13,7 @@ namespace CommsOpen\Trust;
  * the denominator.
  */
 final class TrustScore {
-	public const VERSION = '2.0.2';
+	public const VERSION = '2.2.0';
 	public const RECENT_WINDOW_DAYS = 30;
 	public const MIN_RECENT_EVIDENCE = 3;
 
@@ -27,6 +27,7 @@ final class TrustScore {
 			$viralBoost = min(12.0,
 				max(0, (int) ($input['recentViralNotes'] ?? 0)) * 6.0
 				+ max(0, (int) ($input['recentViralPortfolioPieces'] ?? 0)) * 5.0
+				+ max(0, (int) ($input['recentViralFeedbackContributions'] ?? 0)) * 7.0
 			);
 			$recentPenalty = $recent['moderationPenalty'];
 			$severeOverride = $recentPenalty >= 15.0 ? min(45.0, ($recentPenalty - 10.0) * 1.2) : 0.0;
@@ -38,10 +39,15 @@ final class TrustScore {
 		}
 
 		$score = self::clamp($score, 0.0, 100.0);
+		$communityScore = (int) round($score);
+		$external = self::externalReputation($input);
+		$score = self::clamp($score + $external['adjustment'], 0.0, 100.0);
 		$badge = self::badge($score);
 
 		return array(
 			'version' => self::VERSION,
+			'communityScore' => $communityScore,
+			'externalReputation' => $external,
 			'score' => (int) round($score),
 			'band' => $badge['key'],
 			'label' => $badge['label'],
@@ -52,6 +58,20 @@ final class TrustScore {
 			'moderationPenalty' => $longTerm['moderationPenalty'],
 			'availablePoints' => $longTerm['availablePoints'],
 		);
+	}
+
+	/** Optional positive additions, outside the baseline denominator and recent/moderation inputs. */
+	private static function externalReputation(array $input): array {
+		$verified = !empty($input['externalReputationVerified']);
+		$factors = array(); $adjustment = 0.0;
+		foreach (array('stackExchangeReputation' => 'Stack Exchange reputation', 'stackOverflowReputation' => 'Stack Overflow reputation') as $key => $label) {
+			$reputation = $verified ? max(0, (int) ($input[$key] ?? 0)) : 0;
+			// The starting reputation of one is neutral; increasing reputation can only add points.
+			$earned = min(5.0, 5.0 * log(1.0 + max(0, $reputation - 1)) / log(10001.0));
+			$factors[] = array('label' => $label, 'earned' => round($earned, 2), 'available' => 5.0, 'reputation' => $reputation);
+			$adjustment += $earned;
+		}
+		return array('active' => $verified && $adjustment > 0, 'adjustment' => round($adjustment, 2), 'maxAdjustment' => 10.0, 'factors' => $factors);
 	}
 
 	private static function longTerm(array $input): array {
@@ -67,6 +87,8 @@ final class TrustScore {
 			self::countFactor('Community Notes contributed', $input['notesAuthored'] ?? 0, 8, 8.0),
 			self::countFactor('Stars received', $input['starsReceived'] ?? 0, 60, 16.0),
 			self::countFactor('Helpful Community Note votes received', $input['helpfulNoteVotesReceived'] ?? 0, 30, 10.0),
+			self::countFactor('Issues resolved for the community', $input['issuesResolved'] ?? 0, 5, 14.0),
+			self::countFactor('Helpful product feedback recognition', $input['feedbackRecognitionReceived'] ?? 0, 40, 10.0),
 			self::countFactor('Followers earned', $input['followers'] ?? 0, 40, 7.0),
 		);
 		$evaluatedActions = max(0, (int) ($input['consensusEvaluatedActions'] ?? 0));
@@ -102,19 +124,23 @@ final class TrustScore {
 		$notes = max(0, (int) ($input['recentNotesAuthored'] ?? 0));
 		$stars = max(0, (int) ($input['recentStarsReceived'] ?? 0));
 		$helpful = max(0, (int) ($input['recentHelpfulNoteVotesReceived'] ?? 0));
+		$issuesResolved = max(0, (int) ($input['recentIssuesResolved'] ?? 0));
+		$feedbackRecognition = max(0, (int) ($input['recentFeedbackRecognitionReceived'] ?? 0));
 		$evaluated = max(0, (int) ($input['recentConsensusEvaluatedActions'] ?? 0));
 		$aligned = max(0, min($evaluated, (int) ($input['recentConsensusAlignedActions'] ?? 0)));
 		$responseOpportunities = max(0, (int) ($input['recentResponseOpportunities'] ?? 0));
 		$responses = max(0, min($responseOpportunities, (int) ($input['recentResponses'] ?? 0)));
 		$moderationPenalty = min(60.0, max(0.0, (float) ($input['recentModerationPenalties'] ?? 0)));
-		$viralEvents = max(0, (int) ($input['recentViralNotes'] ?? 0)) + max(0, (int) ($input['recentViralPortfolioPieces'] ?? 0));
-		$evidence = max(0, (int) ($input['recentEvidenceCount'] ?? ($comments + $notes + $stars + $helpful + $evaluated + $responseOpportunities)));
+		$viralEvents = max(0, (int) ($input['recentViralNotes'] ?? 0)) + max(0, (int) ($input['recentViralPortfolioPieces'] ?? 0)) + max(0, (int) ($input['recentViralFeedbackContributions'] ?? 0));
+		$evidence = max(0, (int) ($input['recentEvidenceCount'] ?? ($comments + $notes + $stars + $helpful + $issuesResolved + $feedbackRecognition + $evaluated + $responseOpportunities)));
 		$active = $evidence >= self::MIN_RECENT_EVIDENCE || $moderationPenalty > 0 || $viralEvents > 0;
 
 		$factors = array(
 			self::countFactor('Recent constructive contributions', $comments + $notes, 10, 10.0),
 			self::countFactor('Recent stars received', $stars, 20, 10.0),
 			self::countFactor('Recent helpful Note votes', $helpful, 12, 10.0),
+			self::countFactor('Recent issues resolved', $issuesResolved, 2, 12.0),
+			self::countFactor('Recent product feedback recognition', $feedbackRecognition, 15, 10.0),
 		);
 		if ($evaluated > 0) {
 			$factors[] = self::ratioFactor('Recent sentiment alignment', $aligned, $evaluated, 12.0);

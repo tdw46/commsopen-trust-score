@@ -76,3 +76,14 @@ appeal and moderation review paths and should not use this score as the sole
 basis for irreversible decisions.
 
 MIT licensed. See [LICENSE](LICENSE).
+
+Optional inputs `externalReputationVerified`, `stackExchangeReputation` and `stackOverflowReputation` support a positive-only external bonus. Hosts must authenticate ownership and obtain public-display consent before setting the verification flag. Use the highest non-Overflow community reputation for Stack Exchange, and the Stack Overflow value separately; never count Overflow twice. For each platform the bonus is `min(5, 5 * log(1 + max(0, reputation - 1)) / log(10001))`. Starting reputation, missing accounts and unverified inputs add zero; the combined bonus is capped at ten and the final score remains capped at 100. Outputs add `communityScore` and `externalReputation` with the adjustment and per-platform factors.
+
+The linked bonus is a lifetime signal applied once after the long-term baseline and recent adjustment. It is outside the baseline denominator and does not activate the recent window, contribute dated evidence, momentum, or viral activity. Interfaces should explain this in both horizon summaries while displaying the bonus once in the final calculation. Ownership verification and public-display consent are separate from a link merely existing.
+
+## Validation
+
+```sh
+php -d zend.assertions=1 -d assert.exception=1 tests/TrustScoreTest.php
+php tests/ExternalReputationTest.php
+```

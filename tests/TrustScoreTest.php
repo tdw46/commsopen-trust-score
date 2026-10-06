@@ -13,6 +13,9 @@ assert($withAnsweredMessage['score'] > $withUnansweredMessage['score']);
 assert($withoutMessages['score'] >= $withUnansweredMessage['score']);
 assert(TrustScore::calculate(array('accountAgeDays' => 9999, 'starsReceived' => 9999))['score'] <= 100);
 
+$feedbackContributor = TrustScore::calculate(array('accountAgeDays' => 100, 'issuesResolved' => 5, 'feedbackRecognitionReceived' => 40));
+assert($feedbackContributor['score'] > $withoutMessages['score'] + 20);
+
 $alignedNegative = TrustScore::calculate(array('consensusAlignedActions' => 8, 'consensusEvaluatedActions' => 10));
 $mostlyDisagrees = TrustScore::calculate(array('consensusAlignedActions' => 2, 'consensusEvaluatedActions' => 10));
 assert($alignedNegative['score'] > $mostlyDisagrees['score']);
@@ -26,6 +29,8 @@ $stable = TrustScore::calculate(array(
 	'notesAuthored' => 8,
 	'starsReceived' => 60,
 	'helpfulNoteVotesReceived' => 30,
+	'issuesResolved' => 5,
+	'feedbackRecognitionReceived' => 40,
 	'followers' => 40,
 ));
 $insufficientRecent = TrustScore::calculate(array(
@@ -49,6 +54,9 @@ $positiveRecent = TrustScore::calculate(array(
 	'recentResponses' => 4,
 	'recentEvidenceCount' => 15,
 	'recentViralPortfolioPieces' => 1,
+	'recentIssuesResolved' => 2,
+	'recentFeedbackRecognitionReceived' => 15,
+	'recentViralFeedbackContributions' => 1,
 ));
 assert($positiveRecent['recent']['active'] === true);
 assert($positiveRecent['recent']['adjustment'] > 0);
